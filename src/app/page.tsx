@@ -1,9 +1,5 @@
-import { Button } from '@/components/ui/button'
+import { HomePage } from '@/views/home/ui/HomePage'
 
 export default function Home() {
-  return (
-    <div>
-      <Button>test</Button>
-    </div>
-  )
+  return <HomePage />
 }
