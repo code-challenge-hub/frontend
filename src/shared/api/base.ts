@@ -1,5 +1,9 @@
 // src/shared/api/base.ts
-import axios from 'axios'
+import axios, {
+  AxiosError,
+  AxiosResponse,
+  InternalAxiosRequestConfig,
+} from 'axios'
 import { cookies } from 'next/headers'
 
 export const BASE_URL =
@@ -37,7 +41,7 @@ export const createClientApi = () => {
   })
 
   api.interceptors.request.use(
-    (config) => {
+    (config: InternalAxiosRequestConfig): InternalAxiosRequestConfig => {
       // 클라이언트에서는 쿠키를 자동으로 포함
       config.withCredentials = true
       return config
@@ -48,13 +52,17 @@ export const createClientApi = () => {
   )
 
   api.interceptors.response.use(
-    (response) => response,
-    async (error) => {
-      if (error.response?.status === 401) {
+    (response: AxiosResponse): AxiosResponse => response,
+    async (error: AxiosError | Error): Promise<AxiosError> => {
+      if (axios.isAxiosError(error) && error.response?.status === 401) {
         // 토큰 갱신 로직
         try {
           await axios.post('/api/auth/refresh')
-          return api.request(error.config)
+          // return api.request(error.config)
+          if (error.config) {
+            return api.request(error.config)
+          }
+          throw error
         } catch {
           // 갱신 실패시 로그아웃
           window.location.href = '/login'
