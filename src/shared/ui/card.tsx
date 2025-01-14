@@ -21,7 +21,7 @@ interface CardFooterProps {
 export const Card = ({ children, className = '' }: CardProps) => {
   return (
     <div
-      className={`border rounded-lg w-full bg-white shadow-lg min-h-[400px] flex flex-col ${className}`}
+      className={`border rounded-lg bg-white shadow-lg min-h-[400px] flex flex-col ${className}`}
     >
       {children}
     </div>
